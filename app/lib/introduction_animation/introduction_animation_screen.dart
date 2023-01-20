@@ -7,6 +7,7 @@ import 'package:best_flutter_ui_templates/introduction_animation/components/spla
 import 'package:best_flutter_ui_templates/introduction_animation/components/top_back_skip_view.dart';
 import 'package:best_flutter_ui_templates/introduction_animation/components/welcome_view.dart';
 import 'package:flutter/material.dart';
+import '../login/login.dart';
 
 class IntroductionAnimationScreen extends StatefulWidget {
   const IntroductionAnimationScreen({Key? key}) : super(key: key);
@@ -115,7 +116,7 @@ class _IntroductionAnimationScreenState
   void _signUpClick() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => HotelHomeScreen()),
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   }
 }
