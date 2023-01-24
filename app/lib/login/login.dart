@@ -44,7 +44,8 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlutterLogin(
       title: 'ECORP',
-      logo: AssetImage('assets/images/ecorp-lightblue.png'),
+      logo: AssetImage(
+          '/Users/augustw/Google_Drive/code/grouprun-new/app/assets/images/app_launcher_icon.png'),
       onLogin: _authUser,
       onSignup: _signupUser,
       onSubmitAnimationCompleted: () {
