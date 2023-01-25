@@ -1,6 +1,6 @@
-import 'package:best_flutter_ui_templates/hotel_booking/calendar_popup_view.dart';
-import 'package:best_flutter_ui_templates/hotel_booking/hotel_list_view.dart';
-import 'package:best_flutter_ui_templates/hotel_booking/model/hotel_list_data.dart';
+import 'package:best_flutter_ui_templates/meetup_finder/calendar_popup_view.dart';
+import 'package:best_flutter_ui_templates/meetup_finder/hotel_list_view.dart';
+import 'package:best_flutter_ui_templates/meetup_finder/model/hotel_list_data.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -290,7 +290,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Number of Rooms',
+                            'Choose times',
                             style: TextStyle(
                                 fontWeight: FontWeight.w100,
                                 fontSize: 16,
@@ -300,7 +300,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                             height: 8,
                           ),
                           Text(
-                            '1 Room - 2 Adults',
+                            'All day',
                             style: TextStyle(
                               fontWeight: FontWeight.w100,
                               fontSize: 16,

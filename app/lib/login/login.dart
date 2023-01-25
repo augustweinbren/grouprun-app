@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
-import '../hotel_booking/hotel_home_screen.dart';
+import '../meetup_finder/hotel_home_screen.dart';
 
 const users = const {
   'dribbble@gmail.com': '12345',

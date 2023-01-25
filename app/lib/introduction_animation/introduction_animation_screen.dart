@@ -1,4 +1,4 @@
-import 'package:best_flutter_ui_templates/hotel_booking/hotel_home_screen.dart';
+import 'package:best_flutter_ui_templates/meetup_finder/hotel_home_screen.dart';
 import 'package:best_flutter_ui_templates/introduction_animation/components/care_view.dart';
 import 'package:best_flutter_ui_templates/introduction_animation/components/center_next_button.dart';
 import 'package:best_flutter_ui_templates/introduction_animation/components/mood_diary_vew.dart';

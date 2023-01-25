@@ -1,4 +1,4 @@
-import 'package:best_flutter_ui_templates/hotel_booking/hotel_app_theme.dart';
+import 'package:best_flutter_ui_templates/meetup_finder/hotel_app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

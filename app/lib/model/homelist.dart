@@ -1,4 +1,4 @@
-import 'package:best_flutter_ui_templates/hotel_booking/hotel_home_screen.dart';
+import 'package:best_flutter_ui_templates/meetup_finder/hotel_home_screen.dart';
 import 'package:best_flutter_ui_templates/introduction_animation/introduction_animation_screen.dart';
 import 'package:flutter/widgets.dart';
 
