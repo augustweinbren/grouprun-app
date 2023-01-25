@@ -13,10 +13,10 @@ class FiltersScreen extends StatefulWidget {
 class _FiltersScreenState extends State<FiltersScreen> {
   List<PopularFilterListData> popularFilterListData =
       PopularFilterListData.popularFList;
-  List<PopularFilterListData> accomodationListData =
-      PopularFilterListData.accomodationList;
+  List<PopularFilterListData> runningSettingListData =
+      PopularFilterListData.runningSettingList;
 
-  RangeValues _values = const RangeValues(100, 600);
+  RangeValues _values = const RangeValues(0, 5);
   double distValue = 50.0;
 
   @override
@@ -104,7 +104,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           padding:
               const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
           child: Text(
-            'Type of Accommodation',
+            'Show Groups that Run in:',
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey,
@@ -127,8 +127,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   List<Widget> getAccomodationListUI() {
     final List<Widget> noList = <Widget>[];
-    for (int i = 0; i < accomodationListData.length; i++) {
-      final PopularFilterListData date = accomodationListData[i];
+    for (int i = 0; i < runningSettingListData.length; i++) {
+      final PopularFilterListData date = runningSettingListData[i];
       noList.add(
         Material(
           color: Colors.transparent,
@@ -177,33 +177,33 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   void checkAppPosition(int index) {
     if (index == 0) {
-      if (accomodationListData[0].isSelected) {
-        accomodationListData.forEach((d) {
+      if (runningSettingListData[0].isSelected) {
+        runningSettingListData.forEach((d) {
           d.isSelected = false;
         });
       } else {
-        accomodationListData.forEach((d) {
+        runningSettingListData.forEach((d) {
           d.isSelected = true;
         });
       }
     } else {
-      accomodationListData[index].isSelected =
-          !accomodationListData[index].isSelected;
+      runningSettingListData[index].isSelected =
+          !runningSettingListData[index].isSelected;
 
       int count = 0;
-      for (int i = 0; i < accomodationListData.length; i++) {
+      for (int i = 0; i < runningSettingListData.length; i++) {
         if (i != 0) {
-          final PopularFilterListData data = accomodationListData[i];
+          final PopularFilterListData data = runningSettingListData[i];
           if (data.isSelected) {
             count += 1;
           }
         }
       }
 
-      if (count == accomodationListData.length - 1) {
-        accomodationListData[0].isSelected = true;
+      if (count == runningSettingListData.length - 1) {
+        runningSettingListData[0].isSelected = true;
       } else {
-        accomodationListData[0].isSelected = false;
+        runningSettingListData[0].isSelected = false;
       }
     }
   }
@@ -217,7 +217,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           padding:
               const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
           child: Text(
-            'Distance from city center',
+            'Distance from current location',
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey,
@@ -247,7 +247,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           padding:
               const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
           child: Text(
-            'Popular filters',
+            'Must haves',
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey,
@@ -342,7 +342,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Price (for 1 night)',
+            'Price',
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey,
