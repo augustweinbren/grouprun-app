@@ -9,7 +9,7 @@ class PopularFilterListData {
 
   static List<PopularFilterListData> popularFList = <PopularFilterListData>[
     PopularFilterListData(
-      titleTxt: 'A bag drop',
+      titleTxt: 'Bag drop',
       isSelected: false,
     ),
     PopularFilterListData(
@@ -17,11 +17,11 @@ class PopularFilterListData {
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Social post-run activity',
+      titleTxt: 'Post-run social',
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Competitive streak',
+      titleTxt: 'Competition\ntraining',
       isSelected: false,
     ),
   ];
