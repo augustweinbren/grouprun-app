@@ -30,6 +30,10 @@ dependencies:
     cupertino_icons: ^1.0.2
     font_awesome_flutter: ^10.1.0
     flutter_rating_bar: ^4.0.1
+    flutter_map:
+      git:
+        url: https://github.com/augustweinbren/flutter_map.git
+        ref: feature/multi-icon-tap-to-add
     intl: ^0.17.0
     animations: ^2.0.3
     flutter_svg: ^1.1.6

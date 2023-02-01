@@ -24,6 +24,10 @@ class PopularFilterListData {
       titleTxt: 'Competition\ntraining',
       isSelected: false,
     ),
+    PopularFilterListData(
+      titleTxt: 'Beginner friendly',
+      isSelected: false,
+    ),
   ];
 
   static List<PopularFilterListData> runningSettingList = [
