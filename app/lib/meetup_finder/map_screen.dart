@@ -66,8 +66,8 @@ class _MultiIconTapToAddPageState extends State<MapScreen> {
             Flexible(
               child: FlutterMap(
                 options: MapOptions(
-                    center: LatLng(45.5231, -122.6765),
-                    zoom: 13,
+                    center: LatLng(51.507787, -0.089377),
+                    zoom: 11,
                     onTap: _handleTap),
                 children: [
                   TileLayer(
