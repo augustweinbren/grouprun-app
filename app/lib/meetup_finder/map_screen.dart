@@ -23,16 +23,17 @@ class _MultiIconTapToAddPageState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final heartMarkers = tappedPoints.map((latlng) {
+    final runningMarkers = tappedPoints.map((latlng) {
       return Marker(
         width: 80,
         height: 80,
         point: latlng,
         // builder: (ctx) => const FlutterLogo(),
-        builder: (ctx) => const Icon(Icons.favorite_border),
+        builder: (ctx) => const Icon(Icons.run_circle),
       );
     }).toList();
-    final diamondMarkers = diamondPoints.map((latlng) {
+    final dropMarkers = diamondPoints.map((latlng) {
+      //TODO: Get cafes on board
       return Marker(
         width: 80,
         height: 80,
@@ -41,19 +42,9 @@ class _MultiIconTapToAddPageState extends State<MapScreen> {
         builder: (ctx) => const Icon(Icons.diamond_outlined),
       );
     }).toList();
-    final moneyMarkers = moneyPoints.map((latlng) {
-      return Marker(
-        width: 80,
-        height: 80,
-        point: latlng,
-        // builder: (ctx) => const FlutterLogo(),
-        builder: (ctx) =>
-            const Icon(Icons.architecture_outlined), //TODO: change
-      );
-    }).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tap to add multi-icon pins')),
+      appBar: AppBar(title: const Text('Meetup Map')),
       //drawer: buildDrawer(context, MapScreen.route),
       body: Padding(
         padding: const EdgeInsets.all(8),
@@ -61,7 +52,7 @@ class _MultiIconTapToAddPageState extends State<MapScreen> {
           children: [
             const Padding(
               padding: EdgeInsets.only(top: 8, bottom: 8),
-              child: Text('Tap to add pins'),
+              child: Text('Click on markers for more info'),
             ),
             Flexible(
               child: FlutterMap(
@@ -75,9 +66,7 @@ class _MultiIconTapToAddPageState extends State<MapScreen> {
                         'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'dev.fleaflet.flutter_map.example',
                   ),
-                  MarkerLayer(markers: heartMarkers),
-                  MarkerLayer(markers: diamondMarkers),
-                  MarkerLayer(markers: moneyMarkers),
+                  MarkerLayer(markers: runningMarkers),
                 ],
               ),
             ),
@@ -88,19 +77,8 @@ class _MultiIconTapToAddPageState extends State<MapScreen> {
   }
 
   void _handleTap(TapPosition tapPosition, LatLng latlng) {
-    int randNum = Random().nextInt(3);
-    if (randNum == 0) {
-      setState(() {
-        tappedPoints.add(latlng);
-      });
-    } else if (randNum == 1) {
-      setState(() {
-        diamondPoints.add(latlng);
-      });
-    } else {
-      setState(() {
-        moneyPoints.add(latlng);
-      });
-    }
+    setState(() {
+      tappedPoints.add(latlng);
+    });
   }
 }
