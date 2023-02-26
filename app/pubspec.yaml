@@ -64,7 +64,6 @@ flutter:
         - assets/fitness_app/
         - assets/hotel/
         - assets/introduction_animation/
-        - assets/data/Running Meetups-data.csv
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware.

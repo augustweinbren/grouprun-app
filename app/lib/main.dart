@@ -13,6 +13,8 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+//TODO: add the data to a SQLITE server stored on digital ocean,
+// then use HTTP post requests to send it.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   deleteDatabase(join(await getDatabasesPath(),
@@ -84,7 +86,7 @@ void main() async {
   await insertMeetup(hfParkrun);
 
   final finsParkrun = Meetup(
-    id: 2,
+    id: 3,
     groupName: 'Finsbury Park parkrun',
     lat: 51.56958442044193,
     lng: -0.10416797995832222,
@@ -102,7 +104,7 @@ void main() async {
   await insertMeetup(finsParkrun);
 
   final hackneyMarshesParkrun = Meetup(
-    id: 2,
+    id: 4,
     groupName: 'Hackney Marshes parkrun',
     lat: 51.55541569283087,
     lng: -0.024496272786963126,
@@ -120,7 +122,7 @@ void main() async {
   await insertMeetup(hackneyMarshesParkrun);
 
   final meParkrun = Meetup(
-    id: 2,
+    id: 5,
     groupName: 'Mile End parkrun',
     lat: 51.51839021641621,
     lng: -0.03456499996390295,
@@ -138,7 +140,7 @@ void main() async {
   await insertMeetup(meParkrun);
 
   final southwarkParkrun = Meetup(
-    id: 2,
+    id: 6,
     groupName: 'Southwark parkrun',
     lat: 51.493768030807054,
     lng: -0.05113941090284307,
@@ -156,7 +158,7 @@ void main() async {
   await insertMeetup(southwarkParkrun);
 
   final victoriadockParkrun = Meetup(
-    id: 2,
+    id: 7,
     groupName: 'Victoria Dock parkrun',
     lat: 51.50642478714656,
     lng: 0.016823562169137937,
@@ -174,7 +176,7 @@ void main() async {
   await insertMeetup(victoriadockParkrun);
 
   final burgessparkParkrun = Meetup(
-    id: 2,
+    id: 8,
     groupName: 'Burgess Park parkrun',
     lat: 51.548815035984795, //TODO: change
     lng: -0.10401080493052133, //TODO: change
@@ -192,7 +194,7 @@ void main() async {
   await insertMeetup(burgessparkParkrun);
 
   final peckhamryeParkrun = Meetup(
-    id: 2,
+    id: 9,
     groupName: 'Peckham Rye parkrun',
     lat: 51.481742657835724,
     lng: -0.09310084283996853,
@@ -210,7 +212,7 @@ void main() async {
   await insertMeetup(peckhamryeParkrun);
 
   final brockwellparkParkrun = Meetup(
-    id: 2,
+    id: 10,
     groupName: 'Brockwell Park parkrun',
     lat: 51.453770162082336,
     lng: -0.1091219789431514,
@@ -228,7 +230,7 @@ void main() async {
   await insertMeetup(brockwellparkParkrun);
 
   final claphamcommonParkrun = Meetup(
-    id: 2,
+    id: 11,
     groupName: 'Clapham Common parkrun',
     lat: 51.45615507245232,
     lng: -0.15376265751033583,
@@ -246,7 +248,7 @@ void main() async {
   await insertMeetup(claphamcommonParkrun);
 
   final hillyfieldsParkrun = Meetup(
-    id: 2,
+    id: 12,
     groupName: 'Hilly Fields parkrun',
     lat: 51.460141384786155,
     lng: -0.025015229418334756,
@@ -264,7 +266,7 @@ void main() async {
   await insertMeetup(hillyfieldsParkrun);
 
   final allypallyParkrun = Meetup(
-    id: 2,
+    id: 13,
     groupName: 'Ally Pally parkrun',
     lat: 51.59501986788866,
     lng: -0.12343581019013808,
@@ -282,7 +284,7 @@ void main() async {
   await insertMeetup(allypallyParkrun);
 
   final lordshiprecreationgroundParkrun = Meetup(
-    id: 2,
+    id: 14,
     groupName: 'Lordship Recreation Ground parkrun',
     lat: 51.59436459647848,
     lng: -0.08703845340003445,
@@ -303,7 +305,7 @@ void main() async {
     final db = await database; // assuming you have a database connection
     final List<Map<String, dynamic>> maps = await db.query('meetups');
     return List.generate(maps.length, (i) {
-      print(maps[i]['day']);
+      print(maps[i]['group_name']);
       return Meetup(
         id: maps[i]['id'],
         groupName: maps[i]['group_name'],
@@ -323,9 +325,10 @@ void main() async {
     });
   }
 
-  print(await meetups());
+  await meetups();
 
   Future<void> updateMeetup(Meetup meetup) async {
+    //TODO: incorporate when the data has been uploaded
     // Get a reference to the database.
     final db = await database;
 
