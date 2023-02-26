@@ -7,6 +7,9 @@ import 'package:intl/intl.dart';
 import 'filters_screen.dart';
 import 'map_screen.dart';
 import 'hotel_app_theme.dart';
+import 'package:geolocator/geolocator.dart';
+
+//NOTE: this is the main explore page
 
 class HotelHomeScreen extends StatefulWidget {
   @override

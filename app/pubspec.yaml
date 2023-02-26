@@ -24,6 +24,8 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
+    sqflite:
+    path:
 
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.
@@ -38,6 +40,8 @@ dependencies:
     animations: ^2.0.3
     flutter_svg: ^1.1.6
     flutter_login: ^4.1.1
+    geolocator: ^9.0.2
+    csv: ^5.0.1
 
 dev_dependencies:
     flutter_test:
@@ -60,6 +64,7 @@ flutter:
         - assets/fitness_app/
         - assets/hotel/
         - assets/introduction_animation/
+        - assets/data/Running Meetups-data.csv
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware.

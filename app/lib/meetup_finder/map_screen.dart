@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:math';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -12,14 +14,54 @@ class MapScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _MultiIconTapToAddPageState();
+    return _MapState();
   }
 }
 
-class _MultiIconTapToAddPageState extends State<MapScreen> {
+class _MapState extends State<MapScreen> {
+  late final MapController _mapController;
+  late final StreamSubscription _mapSubscription;
   List<LatLng> tappedPoints = [];
   List<LatLng> diamondPoints = [];
   List<LatLng> moneyPoints = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _mapController = MapController();
+    _mapSubscription = _mapController.mapEventStream.listen((event) async {
+      print(await Geolocator.getCurrentPosition());
+    });
+    //Request permissions
+    Geolocator.checkPermission().then((permission) async {
+      print(permission);
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          // Permissions are denied, next time you could try
+          // requesting permissions again (this is also where
+          // Android's shouldShowRequestPermissionRationale
+          // returned true. According to Android guidelines
+          // your App should show an explanatory UI now.
+          return Future.error('Location permissions are denied');
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _mapSubscription.cancel();
+    super.dispose();
+  }
+
+  void _centerMap() async {
+    print(await Geolocator.getCurrentPosition());
+    final currentLocation = await Geolocator.getCurrentPosition();
+    LatLng locationLatLng =
+        LatLng(currentLocation.latitude, currentLocation.longitude);
+    _mapController.move(locationLatLng, _mapController.zoom);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +98,7 @@ class _MultiIconTapToAddPageState extends State<MapScreen> {
             ),
             Flexible(
               child: FlutterMap(
+                mapController: _mapController,
                 options: MapOptions(
                     center: LatLng(51.507787, -0.089377),
                     zoom: 11,
@@ -73,6 +116,8 @@ class _MultiIconTapToAddPageState extends State<MapScreen> {
           ],
         ),
       ),
+      floatingActionButton:
+          IconButton(icon: Icon(Icons.place), onPressed: _centerMap),
     );
   }
 
