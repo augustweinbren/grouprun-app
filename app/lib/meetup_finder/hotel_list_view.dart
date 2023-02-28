@@ -15,6 +15,7 @@ class HotelListView extends StatelessWidget {
       : super(key: key);
 
   final VoidCallback? callback;
+
   final HotelListData? hotelData;
   final AnimationController? animationController;
   final Animation<double>? animation;
@@ -61,7 +62,8 @@ class HotelListView extends StatelessWidget {
                             ),
                             Container(
                               color: HotelAppTheme.buildLightTheme()
-                                  .backgroundColor,
+                                  .colorScheme
+                                  .background,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
