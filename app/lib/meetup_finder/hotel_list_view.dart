@@ -4,11 +4,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'model/hotel_list_data.dart';
+import 'model/meetup.dart';
 
 class HotelListView extends StatelessWidget {
   const HotelListView(
       {Key? key,
-      this.hotelData,
+      this.meetupData,
       this.animationController,
       this.animation,
       this.callback})
@@ -16,7 +17,7 @@ class HotelListView extends StatelessWidget {
 
   final VoidCallback? callback;
 
-  final HotelListData? hotelData;
+  final Meetup? meetupData;
   final AnimationController? animationController;
   final Animation<double>? animation;
 
@@ -53,13 +54,13 @@ class HotelListView extends StatelessWidget {
                       children: <Widget>[
                         Column(
                           children: <Widget>[
-                            AspectRatio(
-                              aspectRatio: 2,
-                              child: Image.asset(
-                                hotelData!.imagePath,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                            // AspectRatio(
+                            //   aspectRatio: 2,
+                            //   child: Image.asset(
+                            //     hotelData!.imagePath,
+                            //     fit: BoxFit.cover,
+                            //   ),
+                            // ), TODO: add images for meetups
                             Container(
                               color: HotelAppTheme.buildLightTheme()
                                   .colorScheme
@@ -80,12 +81,12 @@ class HotelListView extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
-                                              hotelData!.titleTxt,
+                                              meetupData!.groupName,
                                               textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 22,
-                                              ),
+                                              // style: TextStyle(
+                                              // fontWeight: FontWeight.w600,
+                                              // fontSize: 22,
+                                              // ),
                                             ),
                                             Row(
                                               crossAxisAlignment:
@@ -94,7 +95,8 @@ class HotelListView extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: <Widget>[
                                                 Text(
-                                                  hotelData!.subTxt,
+                                                  meetupData!
+                                                      .formattedStartToEndTime(),
                                                   style: TextStyle(
                                                       fontSize: 14,
                                                       color: Colors.grey
@@ -110,17 +112,17 @@ class HotelListView extends StatelessWidget {
                                                           .buildLightTheme()
                                                       .primaryColor,
                                                 ),
-                                                Expanded(
-                                                  child: Text(
-                                                    '${hotelData!.dist.toStringAsFixed(1)} km to city',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.grey
-                                                            .withOpacity(0.8)),
-                                                  ),
-                                                ),
+                                                // Expanded(
+                                                //   child: Text(
+                                                //     '${hotelData!.dist.toStringAsFixed(1)} km to city',
+                                                //     overflow:
+                                                //         TextOverflow.ellipsis,
+                                                //     style: TextStyle(
+                                                //         fontSize: 14,
+                                                //         color: Colors.grey
+                                                //             .withOpacity(0.8)),
+                                                //   ),
+                                                // ), //TODO: distance from user
                                               ],
                                             ),
                                             Padding(
@@ -128,42 +130,42 @@ class HotelListView extends StatelessWidget {
                                                   const EdgeInsets.only(top: 4),
                                               child: Row(
                                                 children: <Widget>[
-                                                  RatingBar(
-                                                    initialRating:
-                                                        hotelData!.rating,
-                                                    direction: Axis.horizontal,
-                                                    allowHalfRating: true,
-                                                    itemCount: 5,
-                                                    itemSize: 24,
-                                                    ratingWidget: RatingWidget(
-                                                      full: Icon(
-                                                        Icons.star_rate_rounded,
-                                                        color: HotelAppTheme
-                                                                .buildLightTheme()
-                                                            .primaryColor,
-                                                      ),
-                                                      half: Icon(
-                                                        Icons.star_half_rounded,
-                                                        color: HotelAppTheme
-                                                                .buildLightTheme()
-                                                            .primaryColor,
-                                                      ),
-                                                      empty: Icon(
-                                                        Icons
-                                                            .star_border_rounded,
-                                                        color: HotelAppTheme
-                                                                .buildLightTheme()
-                                                            .primaryColor,
-                                                      ),
-                                                    ),
-                                                    itemPadding:
-                                                        EdgeInsets.zero,
-                                                    onRatingUpdate: (rating) {
-                                                      print(rating);
-                                                    },
-                                                  ),
+                                                  // RatingBar(
+                                                  //   initialRating:
+                                                  //       hotelData!.rating,
+                                                  //   direction: Axis.horizontal,
+                                                  //   allowHalfRating: true,
+                                                  //   itemCount: 5,
+                                                  //   itemSize: 24,
+                                                  //   ratingWidget: RatingWidget(
+                                                  //     full: Icon(
+                                                  //       Icons.star_rate_rounded,
+                                                  //       color: HotelAppTheme
+                                                  //               .buildLightTheme()
+                                                  //           .primaryColor,
+                                                  //     ),
+                                                  //     half: Icon(
+                                                  //       Icons.star_half_rounded,
+                                                  //       color: HotelAppTheme
+                                                  //               .buildLightTheme()
+                                                  //           .primaryColor,
+                                                  //     ),
+                                                  //     empty: Icon(
+                                                  //       Icons
+                                                  //           .star_border_rounded,
+                                                  //       color: HotelAppTheme
+                                                  //               .buildLightTheme()
+                                                  //           .primaryColor,
+                                                  //     ),
+                                                  //   ),
+                                                  //   itemPadding:
+                                                  //       EdgeInsets.zero,
+                                                  //   onRatingUpdate: (rating) {
+                                                  //     print(rating);
+                                                  //   },
+                                                  // ), //TODO: consider?
                                                   Text(
-                                                    ' ${hotelData!.reviews} Reviews',
+                                                    meetupData!.formattedDay(),
                                                     style: TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.grey
@@ -177,33 +179,33 @@ class HotelListView extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 16, top: 8),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(
-                                          '\$${hotelData!.perNight}',
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 22,
-                                          ),
-                                        ),
-                                        Text(
-                                          '/per night',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color:
-                                                  Colors.grey.withOpacity(0.8)),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.only(
+                                  //       right: 16, top: 8),
+                                  // child: Column(
+                                  //   mainAxisAlignment:
+                                  //       MainAxisAlignment.center,
+                                  //   crossAxisAlignment:
+                                  //       CrossAxisAlignment.end,
+                                  //   children: <Widget>[
+                                  //     Text(
+                                  //       meetupData!.url,
+                                  //       textAlign: TextAlign.left,
+                                  //       style: TextStyle(
+                                  //         fontWeight: FontWeight.w600,
+                                  //         fontSize: 22,
+                                  //       ),
+                                  //     ),
+                                  //     // Text(
+                                  //     //   '/per night',
+                                  //     //   style: TextStyle(
+                                  //     //       fontSize: 14,
+                                  //     //       color:
+                                  //     //           Colors.grey.withOpacity(0.8)),
+                                  //     // ),
+                                  //   ],
+                                  // ),
+                                  // ),
                                 ],
                               ),
                             ),

@@ -32,8 +32,8 @@ class Meetup {
   final int beginnerFriendly;
   final int runningSettingType;
   final int day;
-  final double startTime;
-  final double endTime;
+  final int startTime;
+  final int endTime;
   final String url;
 
   // Convert a Meetup into a Map. The keys must correspond to the names of the
@@ -66,5 +66,54 @@ class Meetup {
         'competitionTraining: $competitionTraining, beginnerFriendly: ' +
         '$beginnerFriendly, runningSettingType: $runningSettingType, day: $day,' +
         ' startTime: $startTime, endTime: $endTime, url: $url}';
+  }
+
+  String formattedStartToEndTime() {
+    // if (this.startTime > 2359 || this.endTime > 2359) {
+    //   throw ArgumentError("start time or end time too high");
+    // } else if (this.startTime < 0 || this.endTime < 0) {
+    //   throw ArgumentError("start/end time is negative");
+    // } TODO: should be in db
+    int startTimeTenHours = (this.startTime ~/ 1000);
+    int startTimeHour = (this.startTime % 1000) ~/ 100;
+    int startTimeTenMins = (this.startTime % 100) ~/ 10;
+    int startTimeMins = (startTime % 10);
+    String startTimeStr = startTimeTenHours.toString() +
+        startTimeHour.toString() +
+        ":" +
+        startTimeTenMins.toString() +
+        startTimeMins.toString();
+    int endTimeTenHours = (this.endTime ~/ 1000);
+    int endTimeHour = ((this.endTime % 1000) ~/ 100);
+    int endTimeTenMins = ((this.endTime % 100) ~/ 10);
+    int endTimeMins = (endTime % 10);
+    String endTimeStr = endTimeTenHours.toString() +
+        endTimeHour.toString() +
+        ":" +
+        endTimeTenMins.toString() +
+        endTimeMins.toString();
+
+    return (startTimeStr + " - " + endTimeStr);
+  }
+
+  String formattedDay() {
+    switch (this.day) {
+      case 0:
+        return 'Monday';
+      case 1:
+        return 'Tuesday';
+      case 2:
+        return 'Wednesday';
+      case 3:
+        return 'Thursday';
+      case 4:
+        return 'Friday';
+      case 5:
+        return 'Saturday';
+      case 6:
+        return 'Sunday';
+      default:
+        throw (ArgumentError("Day data entered incorrectly"));
+    }
   }
 }

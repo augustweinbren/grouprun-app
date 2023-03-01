@@ -1,9 +1,10 @@
 import 'package:best_flutter_ui_templates/meetup_finder/calendar_popup_view.dart';
 import 'package:best_flutter_ui_templates/meetup_finder/hotel_list_view.dart';
-import 'package:best_flutter_ui_templates/meetup_finder/model/hotel_list_data.dart';
+import 'package:best_flutter_ui_templates/meetup_finder/model/meetup.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'backend/meetupsDb.dart';
 import 'filters_screen.dart';
 import 'map_screen.dart';
 import 'hotel_app_theme.dart';
@@ -19,11 +20,12 @@ class HotelHomeScreen extends StatefulWidget {
 class _HotelHomeScreenState extends State<HotelHomeScreen>
     with TickerProviderStateMixin {
   AnimationController? animationController;
-  List<HotelListData> hotelList = HotelListData.hotelList;
   final ScrollController _scrollController = ScrollController();
 
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
+
+  List<Meetup>? meetupsData;
 
   @override
   void initState() {
@@ -33,7 +35,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   }
 
   Future<bool> getData() async {
-    await Future<dynamic>.delayed(const Duration(milliseconds: 200));
+    meetupsData = await meetups();
     return true;
   }
 
@@ -91,27 +93,40 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                         body: Container(
                           color:
                               HotelAppTheme.buildLightTheme().backgroundColor,
-                          child: ListView.builder(
-                            itemCount: hotelList.length,
-                            padding: const EdgeInsets.only(top: 8),
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (BuildContext context, int index) {
-                              final int count =
-                                  hotelList.length > 10 ? 10 : hotelList.length;
-                              final Animation<double> animation =
-                                  Tween<double>(begin: 0.0, end: 1.0).animate(
-                                      CurvedAnimation(
-                                          parent: animationController!,
-                                          curve: Interval(
-                                              (1 / count) * index, 1.0,
-                                              curve: Curves.fastOutSlowIn)));
-                              animationController?.forward();
-                              return HotelListView(
-                                callback: () {},
-                                hotelData: hotelList[index],
-                                animation: animation,
-                                animationController: animationController!,
-                              );
+                          child: FutureBuilder<bool>(
+                            future: getData(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<bool> snapshot) {
+                              if (!snapshot.hasData) {
+                                return const SizedBox();
+                              } else {
+                                return ListView.builder(
+                                  itemCount: meetupsData!.length,
+                                  padding: const EdgeInsets.only(top: 8),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final int count = meetupsData!.length > 10
+                                        ? 10
+                                        : meetupsData!.length;
+                                    final Animation<double> animation =
+                                        Tween<double>(begin: 0.0, end: 1.0)
+                                            .animate(CurvedAnimation(
+                                                parent: animationController!,
+                                                curve: Interval(
+                                                    (1 / count) * index, 1.0,
+                                                    curve:
+                                                        Curves.fastOutSlowIn)));
+                                    animationController?.forward();
+                                    return HotelListView(
+                                      callback: () {},
+                                      meetupData: meetupsData![index],
+                                      animation: animation,
+                                      animationController: animationController!,
+                                    );
+                                  },
+                                );
+                              }
                             },
                           ),
                         ),
@@ -149,11 +164,11 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                   return const SizedBox();
                 } else {
                   return ListView.builder(
-                    itemCount: hotelList.length,
+                    itemCount: meetupsData!.length,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (BuildContext context, int index) {
                       final int count =
-                          hotelList.length > 10 ? 10 : hotelList.length;
+                          meetupsData!.length > 10 ? 10 : meetupsData!.length;
                       final Animation<double> animation =
                           Tween<double>(begin: 0.0, end: 1.0).animate(
                               CurvedAnimation(
@@ -164,7 +179,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
 
                       return HotelListView(
                         callback: () {},
-                        hotelData: hotelList[index],
+                        meetupData: meetupsData![index],
                         animation: animation,
                         animationController: animationController!,
                       );
@@ -181,8 +196,8 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
 
   Widget getHotelViewList() {
     final List<Widget> hotelListViews = <Widget>[];
-    for (int i = 0; i < hotelList.length; i++) {
-      final int count = hotelList.length;
+    for (int i = 0; i < meetupsData!.length; i++) {
+      final int count = meetupsData!.length;
       final Animation<double> animation =
           Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
@@ -193,7 +208,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
       hotelListViews.add(
         HotelListView(
           callback: () {},
-          hotelData: hotelList[i],
+          meetupData: meetupsData![i],
           animation: animation,
           animationController: animationController!,
         ),
