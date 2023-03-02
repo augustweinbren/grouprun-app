@@ -212,8 +212,8 @@ Future<void> addAllLondonParkrunMeetups() async {
   final burgessparkParkrun = Meetup(
     id: 8,
     groupName: 'Burgess Park parkrun',
-    lat: 51.548815035984795, //TODO: change
-    lng: -0.10401080493052133, //TODO: change
+    lat: 51.48175949385538,
+    lng: -0.09317734572395736,
     day: Day.Saturday.index,
     url: 'https://www.parkrun.org.uk/burgess/course/',
     startTime: 900,
