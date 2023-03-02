@@ -117,3 +117,10 @@ class Meetup {
     }
   }
 }
+
+class SortableMeetup {
+  //convenience class for sorting upon data receipt and location permissions
+  const SortableMeetup({required this.meetup, required this.distanceFromUser});
+  final double distanceFromUser;
+  final Meetup meetup;
+}

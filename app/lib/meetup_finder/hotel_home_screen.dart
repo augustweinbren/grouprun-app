@@ -1,3 +1,6 @@
+import 'dart:collection';
+import 'dart:ffi';
+
 import 'package:best_flutter_ui_templates/meetup_finder/calendar_popup_view.dart';
 import 'package:best_flutter_ui_templates/meetup_finder/hotel_list_view.dart';
 import 'package:best_flutter_ui_templates/meetup_finder/model/meetup.dart';
@@ -26,16 +29,65 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   DateTime endDate = DateTime.now().add(const Duration(days: 5));
 
   List<Meetup>? meetupsData;
+  List<SortableMeetup>? sortedMeetupsData;
+  bool? locationPermissionProvided;
 
   @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     super.initState();
+    //Request permissions
+    Geolocator.checkPermission().then((permission) async {
+      print(permission);
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          // Permissions are denied, next time you could try
+          // requesting permissions again (this is also where
+          // Android's shouldShowRequestPermissionRationale
+          // returned true. According to Android guidelines
+          // your App should show an explanatory UI now.
+          locationPermissionProvided = false;
+          // return Future.error('Location permissions are denied');
+          return showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  title: Text("Location not provided"),
+                  content: Text("Because you have not provided access to your" +
+                      " location, we will be unable to find ones which are close by."));
+            },
+          ); //showDialog
+        }
+      }
+      locationPermissionProvided = true;
+    });
   }
 
   Future<bool> getData() async {
+    // Meetups data and current location
     meetupsData = await meetups();
+    if (locationPermissionProvided!) {
+      sortedMeetupsData = List.empty(growable: true);
+      var currentPos = await Geolocator.getCurrentPosition();
+      for (int i = 0; i < meetupsData!.length; i++) {
+        //calculate distances of meetups from user
+        sortedMeetupsData!.add(SortableMeetup(
+            distanceFromUser: Geolocator.distanceBetween(currentPos.latitude,
+                currentPos.longitude, meetupsData![i].lat, meetupsData![i].lng),
+            meetup: meetupsData![i]));
+      }
+      sortedMeetupsData!
+          .sort((a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
+      // Sort the meetups by distance from a user
+      for (int i = 0; i < sortedMeetupsData!.length; i++) {
+        print("Distance from user of meetup " +
+            sortedMeetupsData![i].meetup.groupName +
+            ": " +
+            sortedMeetupsData![i].distanceFromUser.toString());
+      }
+    }
     return true;
   }
 
@@ -91,15 +143,17 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                           ];
                         },
                         body: Container(
-                          color:
-                              HotelAppTheme.buildLightTheme().backgroundColor,
+                          color: HotelAppTheme.buildLightTheme()
+                              .colorScheme
+                              .background,
                           child: FutureBuilder<bool>(
                             future: getData(),
                             builder: (BuildContext context,
                                 AsyncSnapshot<bool> snapshot) {
                               if (!snapshot.hasData) {
                                 return const SizedBox();
-                              } else {
+                              } else if (!(locationPermissionProvided!)) {
+                                // Meetups unsorted by location
                                 return ListView.builder(
                                   itemCount: meetupsData!.length,
                                   padding: const EdgeInsets.only(top: 8),
@@ -126,6 +180,36 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                     );
                                   },
                                 );
+                              } else {
+                                // Meetups sorted by location
+                                return ListView.builder(
+                                  itemCount: sortedMeetupsData!.length,
+                                  padding: const EdgeInsets.only(top: 8),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final int count =
+                                        sortedMeetupsData!.length > 10
+                                            ? 10
+                                            : sortedMeetupsData!.length;
+                                    final Animation<double> animation =
+                                        Tween<double>(begin: 0.0, end: 1.0)
+                                            .animate(CurvedAnimation(
+                                                parent: animationController!,
+                                                curve: Interval(
+                                                    (1 / count) * index, 1.0,
+                                                    curve:
+                                                        Curves.fastOutSlowIn)));
+                                    animationController?.forward();
+                                    return HotelListView(
+                                      callback: () {},
+                                      meetupData:
+                                          sortedMeetupsData![index].meetup,
+                                      animation: animation,
+                                      animationController: animationController!,
+                                    );
+                                  },
+                                );
                               }
                             },
                           ),
@@ -145,7 +229,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   Widget getListUI() {
     return Container(
       decoration: BoxDecoration(
-        color: HotelAppTheme.buildLightTheme().backgroundColor,
+        color: HotelAppTheme.buildLightTheme().colorScheme.background,
         boxShadow: <BoxShadow>[
           BoxShadow(
               color: Colors.grey.withOpacity(0.2),

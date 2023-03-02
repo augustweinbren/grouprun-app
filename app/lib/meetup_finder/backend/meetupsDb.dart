@@ -63,7 +63,6 @@ Future<List<Meetup>> meetups() async {
       await openMeetupDatabase(); // assuming you have a database connection
   final List<Map<String, dynamic>> maps = await db.query('meetups');
   return List.generate(maps.length, (i) {
-    print(maps[i]['group_name']);
     return Meetup(
       id: maps[i]['id'],
       groupName: maps[i]['group_name'],
