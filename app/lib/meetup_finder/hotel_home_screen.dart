@@ -641,12 +641,12 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                   borderRadius: const BorderRadius.all(
                     Radius.circular(32.0),
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  // onTap: () {
+                  //   Navigator.pop(context);
+                  // },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Icon(Icons.arrow_back),
+                    // child: Icon(Icons.arrow_back),
                   ),
                 ),
               ),
@@ -654,7 +654,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
             Expanded(
               child: Center(
                 child: Text(
-                  'Explore',
+                  'GroupRun',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 22,
