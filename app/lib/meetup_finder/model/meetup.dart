@@ -123,4 +123,12 @@ class SortableMeetup {
   const SortableMeetup({required this.meetup, required this.distanceFromUser});
   final double distanceFromUser;
   final Meetup meetup;
+
+  String distanceString() {
+    if (distanceFromUser == -1.0) {
+      return '';
+    } else {
+      return (distanceFromUser / 1000.0).toStringAsFixed(2) + ' km away';
+    }
+  }
 }

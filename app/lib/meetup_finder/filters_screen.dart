@@ -32,10 +32,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
-                    priceBarFilter(),
-                    const Divider(
-                      height: 1,
-                    ),
+                    // priceBarFilter(),
+                    // const Divider(
+                    //   height: 1,
+                    // ),
                     popularFilter(),
                     const Divider(
                       height: 1,

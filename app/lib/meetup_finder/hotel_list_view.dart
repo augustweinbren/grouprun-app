@@ -17,7 +17,7 @@ class HotelListView extends StatelessWidget {
 
   final VoidCallback? callback;
 
-  final Meetup? meetupData;
+  final SortableMeetup? meetupData;
   final AnimationController? animationController;
   final Animation<double>? animation;
 
@@ -81,7 +81,7 @@ class HotelListView extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
                                             Text(
-                                              meetupData!.groupName,
+                                              meetupData!.meetup.groupName,
                                               textAlign: TextAlign.left,
                                               // style: TextStyle(
                                               // fontWeight: FontWeight.w600,
@@ -95,7 +95,7 @@ class HotelListView extends StatelessWidget {
                                                   MainAxisAlignment.start,
                                               children: <Widget>[
                                                 Text(
-                                                  meetupData!
+                                                  meetupData!.meetup
                                                       .formattedStartToEndTime(),
                                                   style: TextStyle(
                                                       fontSize: 14,
@@ -105,13 +105,14 @@ class HotelListView extends StatelessWidget {
                                                 const SizedBox(
                                                   width: 4,
                                                 ),
-                                                Icon(
-                                                  FontAwesomeIcons.locationDot,
-                                                  size: 12,
-                                                  color: HotelAppTheme
-                                                          .buildLightTheme()
-                                                      .primaryColor,
-                                                ),
+                                                Text(
+                                                    meetupData!.distanceString()
+                                                    //   style: (fontSize: 12,
+                                                    //     color: HotelAppTheme
+                                                    //           .buildLightTheme()
+                                                    //       .primaryColor,
+                                                    // ),
+                                                    ),
                                                 // Expanded(
                                                 //   child: Text(
                                                 //     '${hotelData!.dist.toStringAsFixed(1)} km to city',
@@ -165,7 +166,8 @@ class HotelListView extends StatelessWidget {
                                                   //   },
                                                   // ), //TODO: consider?
                                                   Text(
-                                                    meetupData!.formattedDay(),
+                                                    meetupData!.meetup
+                                                        .formattedDay(),
                                                     style: TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.grey

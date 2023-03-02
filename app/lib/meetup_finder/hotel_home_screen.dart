@@ -68,25 +68,28 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   Future<bool> getData() async {
     // Meetups data and current location
     meetupsData = await meetups();
-    if (locationPermissionProvided!) {
-      sortedMeetupsData = List.empty(growable: true);
-      var currentPos = await Geolocator.getCurrentPosition();
-      for (int i = 0; i < meetupsData!.length; i++) {
-        //calculate distances of meetups from user
+    sortedMeetupsData = List.empty(growable: true);
+    var currentPos = await Geolocator.getCurrentPosition();
+    for (int i = 0; i < meetupsData!.length; i++) {
+      //calculate distances of meetups from user
+      if (locationPermissionProvided!) {
         sortedMeetupsData!.add(SortableMeetup(
             distanceFromUser: Geolocator.distanceBetween(currentPos.latitude,
                 currentPos.longitude, meetupsData![i].lat, meetupsData![i].lng),
             meetup: meetupsData![i]));
+      } else {
+        sortedMeetupsData!.add(
+            SortableMeetup(distanceFromUser: -1.0, meetup: meetupsData![i]));
       }
-      sortedMeetupsData!
-          .sort((a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
-      // Sort the meetups by distance from a user
-      for (int i = 0; i < sortedMeetupsData!.length; i++) {
-        print("Distance from user of meetup " +
-            sortedMeetupsData![i].meetup.groupName +
-            ": " +
-            sortedMeetupsData![i].distanceFromUser.toString());
-      }
+    }
+    sortedMeetupsData!
+        .sort((a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
+    // Sort the meetups by distance from a user
+    for (int i = 0; i < sortedMeetupsData!.length; i++) {
+      print("Distance from user of meetup " +
+          sortedMeetupsData![i].meetup.groupName +
+          ": " +
+          sortedMeetupsData![i].distanceFromUser.toString());
     }
     return true;
   }
@@ -127,7 +130,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                   (BuildContext context, int index) {
                                 return Column(
                                   children: <Widget>[
-                                    getSearchBarUI(),
+                                    // getSearchBarUI(), //TODO: search bar
                                     getTimeDateUI(),
                                   ],
                                 );
@@ -174,7 +177,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                     animationController?.forward();
                                     return HotelListView(
                                       callback: () {},
-                                      meetupData: meetupsData![index],
+                                      meetupData: sortedMeetupsData![index],
                                       animation: animation,
                                       animationController: animationController!,
                                     );
@@ -203,8 +206,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                     animationController?.forward();
                                     return HotelListView(
                                       callback: () {},
-                                      meetupData:
-                                          sortedMeetupsData![index].meetup,
+                                      meetupData: sortedMeetupsData![index],
                                       animation: animation,
                                       animationController: animationController!,
                                     );
@@ -263,7 +265,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
 
                       return HotelListView(
                         callback: () {},
-                        meetupData: meetupsData![index],
+                        meetupData: sortedMeetupsData![index],
                         animation: animation,
                         animationController: animationController!,
                       );
@@ -292,7 +294,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
       hotelListViews.add(
         HotelListView(
           callback: () {},
-          meetupData: meetupsData![i],
+          meetupData: sortedMeetupsData![i],
           animation: animation,
           animationController: animationController!,
         ),
@@ -528,7 +530,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      '530 hotels found',
+                      'Meetups sorted by proximity',
                       style: TextStyle(
                         fontWeight: FontWeight.w100,
                         fontSize: 16,
