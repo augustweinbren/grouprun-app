@@ -10,19 +10,27 @@ class FiltersScreen extends StatefulWidget {
   _FiltersScreenState createState() => _FiltersScreenState();
 }
 
-class _FiltersScreenState extends State<FiltersScreen> {
-  List<PopularFilterListData> popularFilterListData =
-      PopularFilterListData.popularFList;
-  List<PopularFilterListData> runningSettingListData =
-      PopularFilterListData.runningSettingList;
+class DistanceFilterState {
+  DistanceFilterState({
+    this.distanceAlongSlider = 50.0,
+  });
+  double distanceAlongSlider;
 
+  static DistanceFilterState distanceFilterState = DistanceFilterState();
+}
+
+class _FiltersScreenState extends State<FiltersScreen> {
+  List<FilterListData> mustHaveFilterListData = FilterListData.mustHaveFList;
+  List<FilterListData> runningSettingListData =
+      FilterListData.runningSettingList;
+
+  DistanceFilterState distFilterState = DistanceFilterState.distanceFilterState;
   RangeValues _values = const RangeValues(0, 5);
-  double distValue = 50.0;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: HotelAppTheme.buildLightTheme().backgroundColor,
+      color: HotelAppTheme.buildLightTheme().colorScheme.background,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Column(
@@ -44,7 +52,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     const Divider(
                       height: 1,
                     ),
-                    allAccommodationUI()
+                    showGroupsThatRunInUI()
                   ],
                 ),
               ),
@@ -95,7 +103,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
     );
   }
 
-  Widget allAccommodationUI() {
+  Widget showGroupsThatRunInUI() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +123,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         Padding(
           padding: const EdgeInsets.only(right: 16, left: 16),
           child: Column(
-            children: getAccomodationListUI(),
+            children: getGroupsThatRunInUI(),
           ),
         ),
         const SizedBox(
@@ -125,10 +133,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
     );
   }
 
-  List<Widget> getAccomodationListUI() {
+  List<Widget> getGroupsThatRunInUI() {
     final List<Widget> noList = <Widget>[];
     for (int i = 0; i < runningSettingListData.length; i++) {
-      final PopularFilterListData date = runningSettingListData[i];
+      final FilterListData date = runningSettingListData[i];
       noList.add(
         Material(
           color: Colors.transparent,
@@ -136,7 +144,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
             borderRadius: const BorderRadius.all(Radius.circular(4.0)),
             onTap: () {
               setState(() {
-                checkAppPosition(i);
+                flickLocationSwitch(i);
               });
             },
             child: Padding(
@@ -155,7 +163,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                         : Colors.grey.withOpacity(0.6),
                     onChanged: (bool value) {
                       setState(() {
-                        checkAppPosition(i);
+                        flickLocationSwitch(i);
                       });
                     },
                     value: date.isSelected,
@@ -175,7 +183,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
     return noList;
   }
 
-  void checkAppPosition(int index) {
+  void flickLocationSwitch(int index) {
     if (index == 0) {
       if (runningSettingListData[0].isSelected) {
         runningSettingListData.forEach((d) {
@@ -193,7 +201,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
       int count = 0;
       for (int i = 0; i < runningSettingListData.length; i++) {
         if (i != 0) {
-          final PopularFilterListData data = runningSettingListData[i];
+          final FilterListData data = runningSettingListData[i];
           if (data.isSelected) {
             count += 1;
           }
@@ -226,9 +234,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
           ),
         ),
         SliderView(
-          distValue: distValue,
-          onChangedistValue: (double value) {
-            distValue = value;
+          distValue: distFilterState.distanceAlongSlider,
+          onChange: (double value) {
+            setState(() {
+              distFilterState.distanceAlongSlider = value;
+            });
           },
         ),
         const SizedBox(
@@ -244,6 +254,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
+          // The "must haves" header
           padding:
               const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
           child: Text(
@@ -272,11 +283,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
     final List<Widget> noList = <Widget>[];
     int count = 0;
     const int columnCount = 2;
-    for (int i = 0; i < popularFilterListData.length / columnCount; i++) {
+    for (int i = 0; i < mustHaveFilterListData.length / columnCount; i++) {
       final List<Widget> listUI = <Widget>[];
       for (int i = 0; i < columnCount; i++) {
         try {
-          final PopularFilterListData date = popularFilterListData[count];
+          final FilterListData mustHaveItem = mustHaveFilterListData[count];
           listUI.add(Expanded(
             child: Row(
               children: <Widget>[
@@ -286,7 +297,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(4.0)),
                     onTap: () {
                       setState(() {
-                        date.isSelected = !date.isSelected;
+                        mustHaveItem.isSelected = !mustHaveItem.isSelected;
                       });
                     },
                     child: Padding(
@@ -294,10 +305,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       child: Row(
                         children: <Widget>[
                           Icon(
-                            date.isSelected
+                            mustHaveItem.isSelected
                                 ? Icons.check_box
                                 : Icons.check_box_outline_blank,
-                            color: date.isSelected
+                            color: mustHaveItem.isSelected
                                 ? HotelAppTheme.buildLightTheme().primaryColor
                                 : Colors.grey.withOpacity(0.6),
                           ),
@@ -305,7 +316,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                             width: 4,
                           ),
                           Text(
-                            date.titleTxt,
+                            mustHaveItem.titleTxt,
                           ),
                         ],
                       ),
@@ -315,7 +326,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
               ],
             ),
           ));
-          if (count < popularFilterListData.length - 1) {
+          if (count < mustHaveFilterListData.length - 1) {
             count += 1;
           } else {
             break;
@@ -334,7 +345,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
     return noList;
   }
 
-  Widget priceBarFilter() {
+  Widget distanceFilter() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,7 +377,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget getAppBarUI() {
     return Container(
       decoration: BoxDecoration(
-        color: HotelAppTheme.buildLightTheme().backgroundColor,
+        color: HotelAppTheme.buildLightTheme().colorScheme.background,
         boxShadow: <BoxShadow>[
           BoxShadow(
               color: Colors.grey.withOpacity(0.2),

@@ -1,5 +1,5 @@
-class PopularFilterListData {
-  PopularFilterListData({
+class FilterListData {
+  FilterListData({
     this.titleTxt = '',
     this.isSelected = false,
   });
@@ -7,43 +7,43 @@ class PopularFilterListData {
   String titleTxt;
   bool isSelected;
 
-  static List<PopularFilterListData> popularFList = <PopularFilterListData>[
-    PopularFilterListData(
+  static List<FilterListData> mustHaveFList = <FilterListData>[
+    FilterListData(
       titleTxt: 'Bag drop',
       isSelected: false,
     ),
-    PopularFilterListData(
+    FilterListData(
       titleTxt: 'Dog friendly',
       isSelected: false,
     ),
-    PopularFilterListData(
+    FilterListData(
       titleTxt: 'Post-run social',
       isSelected: false,
     ),
-    PopularFilterListData(
+    FilterListData(
       titleTxt: 'Competition\ntraining',
       isSelected: false,
     ),
-    PopularFilterListData(
+    FilterListData(
       titleTxt: 'Beginner friendly',
       isSelected: false,
     ),
   ];
 
-  static List<PopularFilterListData> runningSettingList = [
-    PopularFilterListData(
+  static List<FilterListData> runningSettingList = [
+    FilterListData(
       titleTxt: 'All',
       isSelected: true,
     ),
-    PopularFilterListData(
+    FilterListData(
       titleTxt: 'Parks',
       isSelected: true,
     ),
-    PopularFilterListData(
+    FilterListData(
       titleTxt: 'Tracks',
       isSelected: true,
     ),
-    PopularFilterListData(
+    FilterListData(
       titleTxt: 'Streets',
       isSelected: true,
     ),
