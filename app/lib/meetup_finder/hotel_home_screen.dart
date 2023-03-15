@@ -7,6 +7,7 @@ import 'package:best_flutter_ui_templates/meetup_finder/model/meetup.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'backend/meetupsDb.dart';
 import 'filters_screen.dart';
 import 'map_screen.dart';
@@ -100,6 +101,21 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
     super.dispose();
   }
 
+  Future<void> showOnGoogleMaps(double lat, double lng) async {
+    final gmapsUri = Uri(
+        scheme: 'https',
+        host: 'google.com',
+        path: '/maps/search/',
+        queryParameters: {
+          'api': '1',
+          'query': lat.toString() + ', ' + lng.toString()
+        });
+    //example url: https://www.google.com/maps/search/?api=1&query=47.5951518%2C-122.3316393
+    if (!await launchUrl(gmapsUri)) {
+      throw Exception('Could not launch $gmapsUri');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -176,7 +192,15 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                                         Curves.fastOutSlowIn)));
                                     animationController?.forward();
                                     return HotelListView(
-                                      callback: () {},
+                                      callback: () {
+                                        showOnGoogleMaps(
+                                            sortedMeetupsData![index]
+                                                .meetup
+                                                .lat,
+                                            sortedMeetupsData![index]
+                                                .meetup
+                                                .lng);
+                                      }, //still can be viewed on map
                                       meetupData: sortedMeetupsData![index],
                                       animation: animation,
                                       animationController: animationController!,
@@ -205,7 +229,15 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                                         Curves.fastOutSlowIn)));
                                     animationController?.forward();
                                     return HotelListView(
-                                      callback: () {},
+                                      callback: () {
+                                        showOnGoogleMaps(
+                                            sortedMeetupsData![index]
+                                                .meetup
+                                                .lat,
+                                            sortedMeetupsData![index]
+                                                .meetup
+                                                .lng);
+                                      },
                                       meetupData: sortedMeetupsData![index],
                                       animation: animation,
                                       animationController: animationController!,
@@ -264,7 +296,10 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                       animationController?.forward();
 
                       return HotelListView(
-                        callback: () {},
+                        callback: () {
+                          showOnGoogleMaps(sortedMeetupsData![index].meetup.lat,
+                              sortedMeetupsData![index].meetup.lng);
+                        },
                         meetupData: sortedMeetupsData![index],
                         animation: animation,
                         animationController: animationController!,
@@ -280,31 +315,33 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
     );
   }
 
-  Widget getHotelViewList() {
-    final List<Widget> hotelListViews = <Widget>[];
-    for (int i = 0; i < meetupsData!.length; i++) {
-      final int count = meetupsData!.length;
-      final Animation<double> animation =
-          Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-          parent: animationController!,
-          curve: Interval((1 / count) * i, 1.0, curve: Curves.fastOutSlowIn),
-        ),
-      );
-      hotelListViews.add(
-        HotelListView(
-          callback: () {},
-          meetupData: sortedMeetupsData![i],
-          animation: animation,
-          animationController: animationController!,
-        ),
-      );
-    }
-    animationController?.forward();
-    return Column(
-      children: hotelListViews,
-    );
-  }
+  /// NOT CURRENTLY USED
+  // Widget getHotelViewList() {
+  //   final List<Widget> hotelListViews = <Widget>[];
+  //   for (int i = 0; i < meetupsData!.length; i++) {
+  //     final int count = meetupsData!.length;
+  //     final Animation<double> animation =
+  //         Tween<double>(begin: 0.0, end: 1.0).animate(
+  //       CurvedAnimation(
+  //         parent: animationController!,
+  //         curve: Interval((1 / count) * i, 1.0, curve: Curves.fastOutSlowIn),
+  //       ),
+  //     );
+  //     hotelListViews.add(
+  //       HotelListView(
+  //         callback: showOnGoogleMaps(sortedMeetupsData![i].meetup.lat,
+  //             sortedMeetupsData![i].meetup.lng),
+  //         meetupData: sortedMeetupsData![i],
+  //         animation: animation,
+  //         animationController: animationController!,
+  //       ),
+  //     );
+  //   }
+  //   animationController?.forward();
+  //   return Column(
+  //     children: hotelListViews,
+  //   );
+  // }
 
   Widget getTimeDateUI() {
     return Padding(
