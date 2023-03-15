@@ -31,6 +31,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
 
   List<Meetup>? meetupsData;
   List<SortableMeetup>? sortedMeetupsData;
+  List<Object>? filterState;
   bool? locationPermissionProvided;
 
   @override
@@ -546,7 +547,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
           child: Container(
             height: 24,
             decoration: BoxDecoration(
-              color: HotelAppTheme.buildLightTheme().backgroundColor,
+              color: HotelAppTheme.buildLightTheme().colorScheme.background,
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     color: Colors.grey.withOpacity(0.2),
@@ -557,7 +558,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
           ),
         ),
         Container(
-          color: HotelAppTheme.buildLightTheme().backgroundColor,
+          color: HotelAppTheme.buildLightTheme().colorScheme.background,
           child: Padding(
             padding:
                 const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 4),
@@ -585,9 +586,9 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                     borderRadius: const BorderRadius.all(
                       Radius.circular(4.0),
                     ),
-                    onTap: () {
+                    onTap: () async {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      Navigator.push<dynamic>(
+                      filterState = await Navigator.push<dynamic>(
                         context,
                         MaterialPageRoute<dynamic>(
                             builder: (BuildContext context) => FiltersScreen(),

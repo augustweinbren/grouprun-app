@@ -82,7 +82,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                     highlightColor: Colors.transparent,
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.pop(context, [
+                        this.distFilterState,
+                        this.mustHaveFilterListData,
+                        this.runningSettingListData
+                      ]);
                     },
                     child: Center(
                       child: Text(
@@ -346,6 +350,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   }
 
   Widget distanceFilter() {
+    //TODO: refactor app to make this only vis if location permission has been provided
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
