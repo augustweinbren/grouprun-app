@@ -1,9 +1,11 @@
 import 'dart:collection';
 import 'dart:ffi';
+import 'dart:math';
 
 import 'package:best_flutter_ui_templates/meetup_finder/calendar_popup_view.dart';
 import 'package:best_flutter_ui_templates/meetup_finder/hotel_list_view.dart';
 import 'package:best_flutter_ui_templates/meetup_finder/model/meetup.dart';
+import 'package:best_flutter_ui_templates/meetup_finder/model/popular_filter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -21,8 +23,10 @@ class HotelHomeScreen extends StatefulWidget {
   _HotelHomeScreenState createState() => _HotelHomeScreenState();
 }
 
-class _HotelHomeScreenState extends State<HotelHomeScreen>
-    with TickerProviderStateMixin {
+class _HotelHomeScreenState
+    extends State<HotelHomeScreen> //where getData is called
+    with
+        TickerProviderStateMixin {
   AnimationController? animationController;
   final ScrollController _scrollController = ScrollController();
 
@@ -31,6 +35,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
 
   List<Meetup>? meetupsData;
   List<SortableMeetup>? sortedMeetupsData;
+  List<SortableMeetup>? filteredSortedMeetupsData;
   List<Object>? filterState;
   bool? locationPermissionProvided;
 
@@ -69,23 +74,59 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
 
   Future<bool> getData() async {
     // Meetups data and current location
-    meetupsData = await meetups();
-    sortedMeetupsData = List.empty(growable: true);
-    var currentPos = await Geolocator.getCurrentPosition();
-    for (int i = 0; i < meetupsData!.length; i++) {
-      //calculate distances of meetups from user
-      if (locationPermissionProvided!) {
-        sortedMeetupsData!.add(SortableMeetup(
-            distanceFromUser: Geolocator.distanceBetween(currentPos.latitude,
-                currentPos.longitude, meetupsData![i].lat, meetupsData![i].lng),
-            meetup: meetupsData![i]));
-      } else {
-        sortedMeetupsData!.add(
-            SortableMeetup(distanceFromUser: -1.0, meetup: meetupsData![i]));
+    meetupsData ??= await meetups(); //if not yet init collected, receive it.
+    if (sortedMeetupsData == null) {
+      sortedMeetupsData = List.empty(growable: true);
+      var currentPos = await Geolocator.getCurrentPosition();
+      for (int i = 0; i < meetupsData!.length; i++) {
+        //calculate distances of meetups from user
+        if (locationPermissionProvided!) {
+          sortedMeetupsData!.add(SortableMeetup(
+              distanceFromUser: Geolocator.distanceBetween(
+                  currentPos.latitude,
+                  currentPos.longitude,
+                  meetupsData![i].lat,
+                  meetupsData![i].lng),
+              meetup: meetupsData![i]));
+        } else {
+          sortedMeetupsData!.add(
+              SortableMeetup(distanceFromUser: -1.0, meetup: meetupsData![i]));
+        }
+        sortedMeetupsData!
+            .sort((a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
       }
     }
-    sortedMeetupsData!
-        .sort((a, b) => a.distanceFromUser.compareTo(b.distanceFromUser));
+    if (filterState != null) {
+      filteredSortedMeetupsData = List.empty();
+      DistanceFilterState maxDistanceAway =
+          filterState![0] as DistanceFilterState;
+      double correctedMaxDistance = maxDistanceAway.distanceAlongSlider / 5.0;
+      print('corrected max distance: ' + correctedMaxDistance.toString());
+      List<FilterListData> mustHaves = filterState![1] as List<FilterListData>;
+      List<FilterListData> locationType =
+          filterState![2] as List<FilterListData>;
+      int farthestMeetupToIncludeIndex = meetupsData!.length - 1;
+      for (int i = 0; i < sortedMeetupsData!.length; i++) {
+        // filter by distance
+        if (correctedMaxDistance < sortedMeetupsData![i].distanceFromUser) {
+          farthestMeetupToIncludeIndex = max(0, i - 1);
+          print(farthestMeetupToIncludeIndex);
+          break;
+        }
+      }
+      for (int i = 0; i <= farthestMeetupToIncludeIndex; i++) {
+        filteredSortedMeetupsData!.add(sortedMeetupsData![i]);
+      }
+      // for (FilterListData mustHave in mustHaves) {
+      //   for (int i = 0; i < filteredSortedMeetupsData!.length; i++) {
+      //     if (filteredSortedMeetupsData![i].meetup.bagDrop == 1) {
+      //       filter
+      //     }
+      //   }
+      // }
+    } else {
+      filteredSortedMeetupsData = sortedMeetupsData!;
+    }
     // Sort the meetups by distance from a user
     for (int i = 0; i < sortedMeetupsData!.length; i++) {
       print("Distance from user of meetup " +
@@ -195,14 +236,15 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                     return HotelListView(
                                       callback: () {
                                         showOnGoogleMaps(
-                                            sortedMeetupsData![index]
+                                            filteredSortedMeetupsData![index]
                                                 .meetup
                                                 .lat,
-                                            sortedMeetupsData![index]
+                                            filteredSortedMeetupsData![index]
                                                 .meetup
                                                 .lng);
                                       }, //still can be viewed on map
-                                      meetupData: sortedMeetupsData![index],
+                                      meetupData:
+                                          filteredSortedMeetupsData![index],
                                       animation: animation,
                                       animationController: animationController!,
                                     );
@@ -211,15 +253,15 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                               } else {
                                 // Meetups sorted by location
                                 return ListView.builder(
-                                  itemCount: sortedMeetupsData!.length,
+                                  itemCount: filteredSortedMeetupsData!.length,
                                   padding: const EdgeInsets.only(top: 8),
                                   scrollDirection: Axis.vertical,
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     final int count =
-                                        sortedMeetupsData!.length > 10
+                                        filteredSortedMeetupsData!.length > 10
                                             ? 10
-                                            : sortedMeetupsData!.length;
+                                            : filteredSortedMeetupsData!.length;
                                     final Animation<double> animation =
                                         Tween<double>(begin: 0.0, end: 1.0)
                                             .animate(CurvedAnimation(
@@ -232,14 +274,15 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
                                     return HotelListView(
                                       callback: () {
                                         showOnGoogleMaps(
-                                            sortedMeetupsData![index]
+                                            filteredSortedMeetupsData![index]
                                                 .meetup
                                                 .lat,
-                                            sortedMeetupsData![index]
+                                            filteredSortedMeetupsData![index]
                                                 .meetup
                                                 .lng);
                                       },
-                                      meetupData: sortedMeetupsData![index],
+                                      meetupData:
+                                          filteredSortedMeetupsData![index],
                                       animation: animation,
                                       animationController: animationController!,
                                     );
@@ -262,6 +305,7 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   }
 
   Widget getListUI() {
+    //where data is gotten
     return Container(
       decoration: BoxDecoration(
         color: HotelAppTheme.buildLightTheme().colorScheme.background,
@@ -298,10 +342,11 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
 
                       return HotelListView(
                         callback: () {
-                          showOnGoogleMaps(sortedMeetupsData![index].meetup.lat,
-                              sortedMeetupsData![index].meetup.lng);
+                          showOnGoogleMaps(
+                              filteredSortedMeetupsData![index].meetup.lat,
+                              filteredSortedMeetupsData![index].meetup.lng);
                         },
-                        meetupData: sortedMeetupsData![index],
+                        meetupData: filteredSortedMeetupsData![index],
                         animation: animation,
                         animationController: animationController!,
                       );
@@ -330,9 +375,9 @@ class _HotelHomeScreenState extends State<HotelHomeScreen>
   //     );
   //     hotelListViews.add(
   //       HotelListView(
-  //         callback: showOnGoogleMaps(sortedMeetupsData![i].meetup.lat,
-  //             sortedMeetupsData![i].meetup.lng),
-  //         meetupData: sortedMeetupsData![i],
+  //         callback: showOnGoogleMaps(filteredSortedMeetupsData![i].meetup.lat,
+  //             filteredSortedMeetupsData![i].meetup.lng),
+  //         meetupData: filteredSortedMeetupsData![i],
   //         animation: animation,
   //         animationController: animationController!,
   //       ),
